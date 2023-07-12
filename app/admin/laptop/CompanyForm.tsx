@@ -23,6 +23,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useCreateCompanyMutation } from "@/lib/redux/rtkapi/adminApi";
+import { useToast } from "@/components/ui/use-toast";
+import { Loader2 } from "lucide-react";
 const formSchema = z.object({
   name: z.string().min(2, {
     message: "Company name must be at least 2 characters.",
@@ -30,6 +33,8 @@ const formSchema = z.object({
 });
 
 export function CompanyForm() {
+  const [createCompany, { isLoading, isError }] = useCreateCompanyMutation();
+  const { toast } = useToast();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -37,8 +42,20 @@ export function CompanyForm() {
     },
   });
 
-  const onSubmit = form.handleSubmit((formValues) => {
-    console.log(formValues);
+  const onSubmit = form.handleSubmit(async (data) => {
+    await createCompany({ name: data.name.toLowerCase(), verified: true });
+    if (isError) {
+      return toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem with your request.",
+      });
+    }
+
+    return toast({
+      title: "Company created",
+      description: "Now you can make Order navgiate to order page",
+    });
   });
   return (
     <Dialog>
@@ -72,7 +89,10 @@ export function CompanyForm() {
               )}
             />
             <DialogFooter>
-              <Button type="submit">Save</Button>
+              <Button disabled={isLoading} type="submit">
+                {isLoading ? <Loader2 className="animate-spin" /> : <></>}
+                Save
+              </Button>
             </DialogFooter>
           </form>
         </Form>

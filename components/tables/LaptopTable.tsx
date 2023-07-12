@@ -56,10 +56,6 @@ export function LaptopTable<TData, TValue>({
     },
   });
 
-  const companyNames = Array.from(
-    new Set(laptopModels.map((model) => model.company))
-  );
-
   return (
     <div>
       <div className="flex justify-between gap-1">
@@ -77,11 +73,11 @@ export function LaptopTable<TData, TValue>({
                 <SelectValue placeholder="Theme" />
               </SelectTrigger>
               <SelectContent>
-                {companyNames.map((v, id) => (
+                {/* {companyNames.map((v, id) => (
                   <SelectItem key={id} value={v}>
                     {v}
                   </SelectItem>
-                ))}
+                ))} */}
               </SelectContent>{" "}
             </Select>
             <Button

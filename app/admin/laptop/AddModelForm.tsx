@@ -31,6 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useGetAllCompaniesQuery } from "@/lib/redux/rtkapi/adminApi";
 const formSchema = z.object({
   companyId: z.number(),
   modelName: z.string().min(2, {
@@ -42,6 +43,7 @@ const formSchema = z.object({
 });
 
 export function AddModel() {
+  const { isLoading, data, isError } = useGetAllCompaniesQuery();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -56,23 +58,13 @@ export function AddModel() {
   });
 
   // Fake API response for companies
-  const fetchCompanies = () =>
-    Promise.resolve([
-      { id: 1, name: "Company 1" },
-      { id: 2, name: "Company 2" },
-      { id: 3, name: "Company 3" },
-    ]);
 
-  const [companies, setCompanies] = React.useState<
-    { id: number; name: string }[]
-  >([]);
-
-  React.useEffect(() => {
-    fetchCompanies().then((data) => {
-      setCompanies(data);
-    });
-  }, []);
-
+  if (isError || !data) {
+    return <>error</>;
+  }
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -102,11 +94,8 @@ export function AddModel() {
                         <SelectValue placeholder="Select a company" />
                       </SelectTrigger>
                       <SelectContent>
-                        {companies.map((company) => (
-                          <SelectItem
-                            key={company.id}
-                            value={company.id.toString()}
-                          >
+                        {data?.data?.map((company, id) => (
+                          <SelectItem key={id} value={company.docid}>
                             {company.name}
                           </SelectItem>
                         ))}

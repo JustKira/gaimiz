@@ -6,30 +6,38 @@ import { NextResponse } from "next/server";
 export async function GET(request: Request) {
   await initializeAdmin();
   const firestore = getFirestore();
+  const { searchParams } = new URL(request.url);
+  const uid = searchParams.get("uid");
 
-  const { docs, size } = await firestore.collection("company").get();
-
-  const companies = docs.map((doc) => {
-    return { ...doc.data(), docid: doc.id };
-  });
-  if (docs.length === 0) {
-    return NextResponse.json({ data: [], count: 0 }, { status: 204 });
+  if (!uid) {
+    return NextResponse.json(null, { status: 400 });
   }
-  return NextResponse.json({ data: companies, count: size }, { status: 200 });
+
+  const query = await firestore.collection("profile").doc(uid).get();
+  if (!query.exists) {
+    return new Response(null, { status: 204 });
+  }
+
+  return NextResponse.json({ data: query.data() }, { status: 200 });
 }
 
 export async function POST(request: Request) {
   await initializeAdmin();
   const firestore = getFirestore();
+  const { searchParams } = new URL(request.url);
+  const uid = searchParams.get("uid");
+  const body = await request.json();
 
-  const body = (await request.json()) as Omit<Company, "docid">;
-
-  if (hasNullProperties(body)) {
+  if (!uid || !body) {
+    console.log(uid, body);
     return NextResponse.json({}, { status: 400 });
   }
-  console.log(body);
+
   try {
-    await firestore.collection("company").add({ ...body });
+    await firestore
+      .collection("profile")
+      .doc(uid)
+      .set({ ...body });
   } catch (error) {
     return NextResponse.json({}, { status: 400 });
   }
@@ -40,19 +48,22 @@ export async function PATCH(request: Request) {
   await initializeAdmin();
 
   const { searchParams } = new URL(request.url);
-  const docid = searchParams.get("docid");
+  const cid = searchParams.get("cid");
+  const mid = searchParams.get("mid");
   const firestore = getFirestore();
 
-  const body = (await request.json()) as Partial<Omit<Company, "docid">>;
+  const body = (await request.json()) as Partial<Omit<Model, "docid">>;
 
-  if (!docid) {
+  if (!mid || !cid) {
     return NextResponse.json(null, { status: 400 });
   }
 
   try {
     await firestore
       .collection("company")
-      .doc(docid)
+      .doc(cid)
+      .collection("model")
+      .doc(mid)
       .update({ ...body });
   } catch (error) {
     console.log(error);
@@ -65,15 +76,22 @@ export async function DELETE(request: Request) {
   await initializeAdmin();
 
   const { searchParams } = new URL(request.url);
-  const docid = searchParams.get("docid");
+  const cid = searchParams.get("cid");
+  const mid = searchParams.get("mid");
+
   const firestore = getFirestore();
 
-  if (!docid) {
+  if (!mid || !cid) {
     return NextResponse.json(null, { status: 400 });
   }
 
   try {
-    await firestore.collection("company").doc(docid).delete();
+    await firestore
+      .collection("company")
+      .doc(cid)
+      .collection("model")
+      .doc(mid)
+      .delete();
   } catch (error) {
     console.log(error);
     return NextResponse.json(null, { status: 400 });

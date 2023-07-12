@@ -15,7 +15,7 @@ function arrayToFileList(array: File[]): FileList {
   return dataList.files;
 }
 
-function page(): JSX.Element {
+function AddDesigns(): JSX.Element {
   const [images, setImages] = useState<FileList | undefined>();
   const [uploading, setUploading] = useState<boolean>();
   const [imageLoader, setImageLoader] = useState<number>(0);
@@ -95,4 +95,4 @@ function page(): JSX.Element {
   );
 }
 
-export default page;
+export default AddDesigns;

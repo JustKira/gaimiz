@@ -1,9 +1,16 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore } from "@reduxjs/toolkit";
+import { profileApi } from "@/lib/redux/rtkapi/profileApi";
+import { adminApi } from "@/lib/redux/rtkapi/adminApi";
 
 const store = configureStore({
   reducer: {
-    // Define your reducers here
+    [profileApi.reducerPath]: profileApi.reducer,
+    [adminApi.reducerPath]: adminApi.reducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware()
+      .concat(profileApi.middleware)
+      .concat(adminApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

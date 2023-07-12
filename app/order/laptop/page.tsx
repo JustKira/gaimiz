@@ -43,10 +43,10 @@ const formSchema = z.object({
   year: z.string({ required_error: "please select a year" }),
 });
 
-function page() {
-  const companyNames = Array.from(
-    new Set(laptopModels.map((model) => model.company))
-  );
+function LaptopOrderPage() {
+  // const companyNames = Array.from(
+  //   new Set(laptopModels.map((model) => model.company))
+  // );
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -97,7 +97,7 @@ function page() {
                           <CommandInput placeholder="Search framework..." />
                           <CommandEmpty>No Laptop Company found.</CommandEmpty>
                           <CommandGroup>
-                            {companyNames.map((company) => (
+                            {/* {companyNames.map((company) => (
                               <CommandItem
                                 value={company}
                                 key={company}
@@ -115,7 +115,7 @@ function page() {
                                 />
                                 {company}
                               </CommandItem>
-                            ))}
+                            ))} */}
                           </CommandGroup>
                         </Command>
                       </PopoverContent>
@@ -135,7 +135,7 @@ function page() {
   );
 }
 
-export default page;
+export default LaptopOrderPage;
 {
   /* <Select onValueChange={field.onChange} defaultValue={field.value}>
   <SelectTrigger>

@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import {
   Menubar,
@@ -9,6 +10,9 @@ import {
   MenubarTrigger,
 } from "@/components/ui/menubar";
 import Link from "next/link";
+import { useAuth } from "../lib/provider/authProvider";
+import { Loader2 } from "lucide-react";
+import { Button } from "./ui/button";
 const Navbar = () => {
   const NavLinks: {
     path: string;
@@ -20,77 +24,76 @@ const Navbar = () => {
     },
   ];
 
+  const { user, loading } = useAuth();
+
   return (
     <div className="h-20">
-      <nav className="fixed top-0 z-50 flex items-center w-full gap-4 p-4 border-b-2 bg-background/20 backdrop-blur-xl border-border">
-        <div>LOGO</div>
+      <nav className="fixed top-0 z-50 flex items-center justify-between w-full gap-4 p-4 border-b-2 bg-background/20 backdrop-blur-xl border-border">
+        <div className="flex items-center justify-center gap-4">
+          <div>LOGO</div>
 
-        {/* <ul>
-        <li>
-          <DropdownMenu>
-            <DropdownMenuTrigger>ORDER</DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>Select Order Type</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <Link href={"order/laptop"}>
-                <DropdownMenuItem>Laptop</DropdownMenuItem>
+          <Menubar className="bg-transparent border-none">
+            <MenubarMenu>
+              <MenubarTrigger>Make Order</MenubarTrigger>
+              <MenubarContent>
+                <Link href={"order/laptop"}>
+                  <MenubarItem>Laptop</MenubarItem>
+                </Link>
+                <Link href={"order/console"}>
+                  <MenubarItem>Console</MenubarItem>
+                </Link>{" "}
+                <Link href={"order/badges"}>
+                  <MenubarItem>Badges</MenubarItem>
+                </Link>
+                <MenubarSeparator />
+                <MenubarItem>Your Orders</MenubarItem>
+              </MenubarContent>
+            </MenubarMenu>
+            <MenubarMenu>
+              <MenubarTrigger>File</MenubarTrigger>
+              <MenubarContent>
+                <MenubarItem>
+                  New Tab <MenubarShortcut>⌘T</MenubarShortcut>
+                </MenubarItem>
+                <MenubarItem>New Window</MenubarItem>
+                <MenubarSeparator />
+                <MenubarItem>Share</MenubarItem>
+                <MenubarSeparator />
+                <MenubarItem>Print</MenubarItem>
+              </MenubarContent>
+            </MenubarMenu>
+            <MenubarMenu>
+              <MenubarTrigger>File</MenubarTrigger>
+              <MenubarContent>
+                <MenubarItem>
+                  New Tab <MenubarShortcut>⌘T</MenubarShortcut>
+                </MenubarItem>
+                <MenubarItem>New Window</MenubarItem>
+                <MenubarSeparator />
+                <MenubarItem>Share</MenubarItem>
+                <MenubarSeparator />
+                <MenubarItem>Print</MenubarItem>
+              </MenubarContent>
+            </MenubarMenu>
+          </Menubar>
+        </div>
+        {loading ? (
+          <>
+            <Loader2 className="animate-spin" />
+          </>
+        ) : (
+          <>
+            {user ? (
+              <Link href={"/auth/signout"}>
+                <Button>SIGN OUT</Button>
               </Link>
-              <Link href={"order/console"}>
-                <DropdownMenuItem>Console</DropdownMenuItem>
+            ) : (
+              <Link href={"/auth/signin"}>
+                <Button>SIGN IN</Button>
               </Link>
-
-              <Link href={"order/badges"}>
-                <DropdownMenuItem>Badges</DropdownMenuItem>
-              </Link>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </li>
-      </ul> */}
-
-        <Menubar>
-          <MenubarMenu>
-            <MenubarTrigger>Make Order</MenubarTrigger>
-            <MenubarContent>
-              <Link href={"order/laptop"}>
-                <MenubarItem>Laptop</MenubarItem>
-              </Link>
-              <Link href={"order/console"}>
-                <MenubarItem>Console</MenubarItem>
-              </Link>{" "}
-              <Link href={"order/badges"}>
-                <MenubarItem>Badges</MenubarItem>
-              </Link>
-              <MenubarSeparator />
-              <MenubarItem>Your Orders</MenubarItem>
-            </MenubarContent>
-          </MenubarMenu>
-          <MenubarMenu>
-            <MenubarTrigger>File</MenubarTrigger>
-            <MenubarContent>
-              <MenubarItem>
-                New Tab <MenubarShortcut>⌘T</MenubarShortcut>
-              </MenubarItem>
-              <MenubarItem>New Window</MenubarItem>
-              <MenubarSeparator />
-              <MenubarItem>Share</MenubarItem>
-              <MenubarSeparator />
-              <MenubarItem>Print</MenubarItem>
-            </MenubarContent>
-          </MenubarMenu>
-          <MenubarMenu>
-            <MenubarTrigger>File</MenubarTrigger>
-            <MenubarContent>
-              <MenubarItem>
-                New Tab <MenubarShortcut>⌘T</MenubarShortcut>
-              </MenubarItem>
-              <MenubarItem>New Window</MenubarItem>
-              <MenubarSeparator />
-              <MenubarItem>Share</MenubarItem>
-              <MenubarSeparator />
-              <MenubarItem>Print</MenubarItem>
-            </MenubarContent>
-          </MenubarMenu>
-        </Menubar>
+            )}
+          </>
+        )}
       </nav>
     </div>
   );
