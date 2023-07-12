@@ -22,7 +22,7 @@ export async function GET(request: Request) {
   const models = docs.map((doc) => doc.data());
   if (docs.length === 0) {
     console.log("Not Found");
-    return Response.json(null, { status: 204 });
+    return NextResponse.json(null, { status: 204 });
   }
   return NextResponse.json({ data: models, count: size }, { status: 200 });
 }
@@ -77,9 +77,9 @@ export async function PATCH(request: Request) {
       .update({ ...body });
   } catch (error) {
     console.log(error);
-    return NextResponse.json(null, { status: 400 });
+    return new Response(null, { status: 400 });
   }
-  return new Response(null, { status: 204 });
+  return new NextResponse(null, { status: 204 });
 }
 
 export async function DELETE(request: Request) {
