@@ -43,6 +43,23 @@ export async function POST(request: Request) {
   }
 
   try {
+    const query = await firestore
+      .collection("company")
+      .doc(cid)
+      .collection("model")
+      .where("name", "==", body.name)
+      .get();
+
+    if (query.docs.length != 0) {
+      return NextResponse.json(
+        { error: "model already exits" },
+        { status: 409 }
+      );
+    }
+  } catch (error) {
+    return NextResponse.json({}, { status: 400 });
+  }
+  try {
     await firestore
       .collection("company")
       .doc(cid)

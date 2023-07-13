@@ -33,10 +33,50 @@ export const adminApi = createApi({
         method: "DELETE",
       }),
     }),
+    createModel: builder.mutation<
+      void,
+      { cid: string; createValues: Omit<Model, "docid" | "verified"> }
+    >({
+      query: ({ cid, createValues }) => ({
+        url: `/laptop/model?cid=${cid}`,
+        method: "POST",
+        body: createValues,
+      }),
+    }),
+    getModel: builder.query<Model, { cid: string; mid: string }>({
+      query: ({ cid, mid }) => `/laptop/model?cid=${cid}?mid=${mid}`,
+    }),
+    getAllModels: builder.query<
+      { data: Model[]; count: number },
+      { cid: string }
+    >({
+      query: ({ cid }) => `/laptop/model?cid=${cid}`,
+    }),
+    updateModel: builder.mutation<
+      void,
+      { cid: string; mid: string; updateValues: Partial<Model> }
+    >({
+      query: ({ cid, mid, updateValues }) => ({
+        url: `/laptop/model?cid=${cid}?mid=${mid}`,
+        method: "PUT",
+        body: updateValues,
+      }),
+    }),
+    deleteModel: builder.mutation<void, { cid: string; mid: string }>({
+      query: ({ cid, mid }) => ({
+        url: `/laptop/model?cid=${cid}?mid=${mid}`,
+        method: "DELETE",
+      }),
+    }),
   }),
 });
 
 export const {
+  useCreateModelMutation,
+  useGetModelQuery,
+  useGetAllModelsQuery,
+  useUpdateModelMutation,
+  useDeleteModelMutation,
   useCreateCompanyMutation,
   useGetCompanyQuery,
   useGetAllCompaniesQuery,

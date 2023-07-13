@@ -31,38 +31,64 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useGetAllCompaniesQuery } from "@/lib/redux/rtkapi/adminApi";
+import {
+  useCreateModelMutation,
+  useGetAllCompaniesQuery,
+  useGetAllModelsQuery,
+} from "@/lib/redux/rtkapi/adminApi";
+import { useToast } from "@/components/ui/use-toast";
 const formSchema = z.object({
-  companyId: z.number(),
-  modelName: z.string().min(2, {
+  companyId: z.string(),
+  name: z.string().min(2, {
     message: "Model name must be at least 2 characters.",
   }),
-  modelYear: z.string().regex(/^\d{4}$/, {
-    message: "Invalid model year. Please enter a 4-digit year.",
+  years: z.string().regex(/^(\d{4}\/)+\d{4}$/, {
+    message:
+      "Invalid model year. Please enter a valid 4-digit year or a series of 4-digit years separated by '/'",
   }),
 });
 
 export function AddModel() {
-  const { isLoading, data, isError } = useGetAllCompaniesQuery();
+  const { toast } = useToast();
+  const allCompanyRes = useGetAllCompaniesQuery();
+  const [createModel, createModelRes] = useCreateModelMutation();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       companyId: "",
-      modelName: "",
-      modelYear: "",
+      name: "",
+      years: "",
     },
   });
 
-  const onSubmit = form.handleSubmit((formValues) => {
-    console.log(formValues);
+  const onSubmit = form.handleSubmit((data) => {
+    const yearsArray = Array.from(new Set(data.years.split("/").map(Number)));
+
+    createModel({
+      cid: data.companyId,
+      createValues: { name: data.name, years: yearsArray },
+    });
+
+    if (createModelRes.isError) {
+      return toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem with your request.",
+      });
+    }
+
+    return toast({
+      title: "Model created",
+      description: "model have been added to model list",
+    });
   });
 
   // Fake API response for companies
 
-  if (isError || !data) {
+  if (allCompanyRes.isError || !allCompanyRes.data) {
     return <>error</>;
   }
-  if (isLoading) {
+  if (allCompanyRes.isLoading) {
     return <div>Loading...</div>;
   }
   return (
@@ -94,7 +120,7 @@ export function AddModel() {
                         <SelectValue placeholder="Select a company" />
                       </SelectTrigger>
                       <SelectContent>
-                        {data?.data?.map((company, id) => (
+                        {allCompanyRes.data?.data?.map((company, id) => (
                           <SelectItem key={id} value={company.docid}>
                             {company.name}
                           </SelectItem>
@@ -111,7 +137,7 @@ export function AddModel() {
             />
             <FormField
               control={form.control}
-              name="modelName"
+              name="name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Model Name</FormLabel>
@@ -127,7 +153,7 @@ export function AddModel() {
             />
             <FormField
               control={form.control}
-              name="modelYear"
+              name="years"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Model Year</FormLabel>

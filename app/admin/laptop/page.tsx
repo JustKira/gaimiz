@@ -5,6 +5,7 @@ import { CompanyForm } from "./CompanyForm";
 import { AddModel } from "./AddModelForm";
 
 import { Separator } from "@/components/ui/separator";
+import LaptopTable from "./LaptopTable";
 
 function page() {
   return (
@@ -19,6 +20,7 @@ function page() {
           <AddModel />
         </div>
         <Separator className="my-4" />
+        <LaptopTable />
       </CardContent>
     </>
   );
