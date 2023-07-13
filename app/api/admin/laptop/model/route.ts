@@ -19,7 +19,9 @@ export async function GET(request: Request) {
     .collection("model")
     .get();
 
-  const models = docs.map((doc) => doc.data());
+  const models = docs.map((doc) => {
+    return { ...doc.data(), docid: doc.id };
+  });
   if (docs.length === 0) {
     console.log("Not Found");
     return NextResponse.json(null, { status: 204 });

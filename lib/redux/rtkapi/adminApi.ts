@@ -75,6 +75,7 @@ export const {
   useCreateModelMutation,
   useGetModelQuery,
   useGetAllModelsQuery,
+  useLazyGetAllModelsQuery,
   useUpdateModelMutation,
   useDeleteModelMutation,
   useCreateCompanyMutation,
