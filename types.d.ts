@@ -15,12 +15,7 @@ type Order = {
   readonly docid: string;
   cycle: number;
   createdAt: Date;
-  Order: (LaptopOrder | ConsoleOrder)[];
-};
-
-type LaptopOrder = {
-  readonly docid: string;
-  orderType: "Laptop";
+  Orders: (LaptopOrder | ConsoleOrder)[];
 };
 
 type ConsoleOrder = {
@@ -38,4 +33,28 @@ type Profile = {
   area: string;
   streetname: string;
   building: string;
+};
+
+type LaptopOrder = {
+  readonly docid: string;
+  orderType: "Laptop";
+  //split1
+  company: string;
+  model: string;
+  year: number;
+  verified: boolean;
+  //split2
+  back?: boolean;
+  front?: boolean;
+  backDesign?: string;
+  frontDesign?: string;
+  withLogo: boolean;
+  //split3
+  laptopBackImg?: string;
+  laptopFrontImg?: string;
+};
+
+type Design = {
+  readonly docid: string;
+  downloadPath: string;
 };

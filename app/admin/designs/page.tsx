@@ -4,9 +4,12 @@ import { Button } from "@/components/ui/button";
 import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Cross, Delete } from "lucide-react";
+import { Cross, Delete, Loader2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-
+import Resizer from "react-image-file-resizer";
+import { firebase_storage } from "@/lib/firebase";
+import { getDownloadURL, ref, uploadString } from "firebase/storage";
+import { useCreateDesignMutation } from "@/lib/redux/rtkapi/adminApi";
 function arrayToFileList(array: File[]): FileList {
   const dataList = new DataTransfer();
   array.forEach((file) => {
@@ -17,31 +20,44 @@ function arrayToFileList(array: File[]): FileList {
 
 function AddDesigns(): JSX.Element {
   const [images, setImages] = useState<FileList | undefined>();
-  const [uploading, setUploading] = useState<boolean>();
-  const [imageLoader, setImageLoader] = useState<number>(0);
-
+  const [uploading, setUploading] = useState<boolean>(false);
+  const [createDesign, createDesignQuery] = useCreateDesignMutation();
+  const resizeFile = (file: File) =>
+    new Promise((resolve) => {
+      Resizer.imageFileResizer(
+        file,
+        400,
+        225,
+        "WEBP",
+        100,
+        0,
+        (uri) => {
+          resolve(uri);
+        },
+        "base64"
+      );
+    });
   const uploadImages = async () => {
     if (!images) return;
+
     setUploading(true);
-    // for (let i = 0; i < images.length; i++) {
-    //   const imageRef = ref(
-    //     FIREBASE_STORAGE,
-    //     `gaimiz_designs/${images[i].name}`
-    //   );
+    for (let i = 0; i < images.length; i++) {
+      const imageRef = ref(firebase_storage, `gd/${images[i].name}`);
 
-    //   const cleanedImage: any = await resizeFile(images[i]);
-    //   console.log(cleanedImage);
-    //   const result = await uploadString(
-    //     imageRef,
-    //     cleanedImage,
-    //     "data_url"
-    //   ).catch((error) => {
-    //     throw Error("Something went wronge while uploading");
-    //   });
-    //   setImageLoader(i + 1);
-    // }
+      const cleanedImage: any = await resizeFile(images[i]);
 
-    // setUploading(false);
+      const result = await uploadString(
+        imageRef,
+        cleanedImage,
+        "data_url"
+      ).catch((error) => {
+        throw Error("Something went wronge while uploading");
+      });
+      const downloadPath = await getDownloadURL(result.ref);
+      createDesign({ downloadPath: downloadPath });
+    }
+    setImages(undefined);
+    setUploading(false);
   };
 
   const removeImage = (index: number): void => {
@@ -71,7 +87,15 @@ function AddDesigns(): JSX.Element {
             multiple
             onChange={handleImageChange}
           />
-          <Button type="submit">Upload</Button>
+          <Button
+            disabled={uploading}
+            type="button"
+            onClick={() => {
+              uploadImages();
+            }}
+          >
+            {uploading ? <Loader2 className="animate-spin" /> : ""}Upload
+          </Button>
         </div>
         <Separator className="my-4" />
         <div className="w-full transition-all duration-300 columns-3">
