@@ -54,7 +54,7 @@ function AddDesigns(): JSX.Element {
         throw Error("Something went wronge while uploading");
       });
       const downloadPath = await getDownloadURL(result.ref);
-      createDesign({ downloadPath: downloadPath });
+      createDesign({ downloadPath: downloadPath, name: result.ref.name });
     }
     setImages(undefined);
     setUploading(false);

@@ -29,10 +29,27 @@ export async function POST(request: Request) {
   }
 
   try {
-    await firestore.collection("designs").add({ ...body });
-  } catch (error) {
-    return NextResponse.json({}, { status: 400 });
-  }
+    const designDoc = await firestore
+      .collection("designs")
+      .where("name", "==", body.name)
+      .limit(1)
+      .get();
+
+    const docId = designDoc.docs.map((entry) => entry.id);
+    console.log(docId.length);
+    if (docId.length !== 0) {
+      await firestore
+        .collection("designs")
+        .doc(docId[0])
+        .set({ ...body });
+    } else {
+      try {
+        await firestore.collection("designs").add({ ...body });
+      } catch (error) {
+        return NextResponse.json({}, { status: 400 });
+      }
+    }
+  } catch (error) {}
 
   return NextResponse.json({}, { status: 201 });
 }

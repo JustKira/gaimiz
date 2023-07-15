@@ -13,6 +13,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
 
 const formSchema = z.object({
   back: z.boolean().refine((value) => value === true, {
@@ -34,7 +35,7 @@ const LaptopConfigPage = () => {
       front: false,
       backDesign: "",
       frontDesign: "",
-      withLogo: false,
+      withLogo: true,
     },
   });
   return (
@@ -51,39 +52,75 @@ const LaptopConfigPage = () => {
         <CardContent className="relative flex flex-col items-center py-12 transition-all duration-300 md:py-24">
           <Form {...form}>
             <form onSubmit={() => {}} className="space-y-8">
+              <div className="flex flex-col gap-2">
+                <FormField
+                  control={form.control}
+                  name="back"
+                  render={({ field }) => (
+                    <FormItem className="relative z-30 flex flex-row items-center justify-between p-4 border rounded-lg bg-background">
+                      <div className="space-y-0.5">
+                        <FormLabel className="text-base">Back part</FormLabel>
+                        <FormDescription className="mr-4">
+                          add skin to back of your laptop screen
+                        </FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  disabled={!form.getValues("back")}
+                  className={`${
+                    form.getValues("back") ? "" : "-translate-y-full"
+                  } relative transition-all z-10 duration-500`}
+                >
+                  Select Design
+                </Button>
+              </div>{" "}
+              <div className="flex flex-col gap-2">
+                <FormField
+                  control={form.control}
+                  name="front"
+                  render={({ field }) => (
+                    <FormItem className="relative z-30 flex flex-row items-center justify-between p-4 border rounded-lg bg-background">
+                      <div className="space-y-0.5">
+                        <FormLabel className="text-base">Front part</FormLabel>
+                        <FormDescription>
+                          add skin to your keyboard
+                        </FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  disabled={!form.getValues("front")}
+                  className={`${
+                    form.getValues("front") ? "" : "-translate-y-full"
+                  } relative transition-all z-10 duration-500`}
+                >
+                  Select Design
+                </Button>
+              </div>
               <FormField
                 control={form.control}
-                name="back"
+                name="withLogo"
                 render={({ field }) => (
                   <FormItem className="flex flex-row items-center justify-between p-4 border rounded-lg">
                     <div className="space-y-0.5">
-                      <FormLabel className="text-base">
-                        Marketing emails
-                      </FormLabel>
+                      <FormLabel className="text-base">With Logo</FormLabel>
                       <FormDescription>
-                        Receive emails about new products, features, and more.
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="front"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between p-4 border rounded-lg">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-base">
-                        Marketing emails
-                      </FormLabel>
-                      <FormDescription>
-                        Receive emails about new products, features, and more.
+                        Gaimiz Logo added to design
                       </FormDescription>
                     </div>
                     <FormControl>

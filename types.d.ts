@@ -56,5 +56,6 @@ type LaptopOrder = {
 
 type Design = {
   readonly docid: string;
+  name: string;
   downloadPath: string;
 };
