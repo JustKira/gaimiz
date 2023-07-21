@@ -1,11 +1,19 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { useEffect } from "react";
 
-// Create the adminApi instance
-export const adminApi = createApi({
-  reducerPath: "adminApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "/api/admin" }),
+// Create the gaimizApi instance
+export const gaimizApi = createApi({
+  reducerPath: "gaimizApi",
+  baseQuery: fetchBaseQuery({ baseUrl: "/api/gaimiz" }),
   endpoints: (builder) => ({
+    //SECTION - ORDER
+    getCurrentLaptopOrder: builder.query<{ data: LaptopOrder }, string>({
+      query: (uid) => ({
+        url: `order/laptop/create?uid=${uid}`,
+        method: "get",
+      }),
+    }),
+
     //SECTION - COMPANY
     // Create a company
     createCompany: builder.mutation<void, Omit<Company, "docid">>({
@@ -98,8 +106,14 @@ export const adminApi = createApi({
       query: ({ did }) => `/designs/?did=${did}`,
     }),
     // Get all designs
-    getAllDesigns: builder.query<{ data: Design[]; count: number }, void>({
-      query: () => "/designs/",
+    getAllDesigns: builder.query<
+      { data: Design[]; firstDoc?: string; lastDoc?: string; count: number },
+      { nextid?: string; previd?: string; limit: number }
+    >({
+      query: ({ nextid, previd, limit }) =>
+        `/designs?limit=${limit}${nextid ? `&nextid=${nextid}` : ""}${
+          previd ? `&previd=${previd}` : ""
+        }`,
     }),
     // Update a design
     updateDesign: builder.mutation<
@@ -130,6 +144,7 @@ export const {
   useLazyGetAllModelsQuery,
   useUpdateModelMutation,
   useDeleteModelMutation,
+
   useCreateCompanyMutation,
   useGetCompanyQuery,
   useGetAllCompaniesQuery,
@@ -138,8 +153,10 @@ export const {
   useCreateDesignMutation,
   useGetDesignQuery,
   useGetAllDesignsQuery,
+  useLazyGetAllDesignsQuery,
   useUpdateDesignMutation,
   useDeleteDesignMutation,
-} = adminApi;
+  useLazyGetCurrentLaptopOrderQuery,
+} = gaimizApi;
 
-export default adminApi;
+export default gaimizApi;

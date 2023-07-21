@@ -9,7 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import Resizer from "react-image-file-resizer";
 import { firebase_storage } from "@/lib/firebase";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
-import { useCreateDesignMutation } from "@/lib/redux/rtkapi/adminApi";
+import { useCreateDesignMutation } from "@/lib/redux/rtkapi/gaimizApi";
 function arrayToFileList(array: File[]): FileList {
   const dataList = new DataTransfer();
   array.forEach((file) => {

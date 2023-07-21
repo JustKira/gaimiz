@@ -23,7 +23,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useCreateCompanyMutation } from "@/lib/redux/rtkapi/adminApi";
+import { useCreateCompanyMutation } from "@/lib/redux/rtkapi/gaimizApi";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
 const formSchema = z.object({

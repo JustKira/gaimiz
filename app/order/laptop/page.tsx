@@ -39,10 +39,16 @@ import { cn } from "@/lib/utils";
 import {
   useGetAllCompaniesQuery,
   useLazyGetAllModelsQuery,
-} from "@/lib/redux/rtkapi/adminApi";
-import { useDispatch } from "react-redux";
-import { setSplit1 } from "@/lib/redux/slices/laptopOrderSlice";
+} from "@/lib/redux/rtkapi/gaimizApi";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setCompanyCid,
+  setSplit1,
+  setYears,
+} from "@/lib/redux/slices/laptopOrderSlice";
 import { useRouter } from "next/navigation";
+import { RootState } from "@/lib/redux/store";
+import Link from "next/link";
 
 const formSchema = z.object({
   company: z
@@ -71,14 +77,29 @@ function LaptopOrderPage() {
 
   // const [cid, setCid] = React.useState<string>("");
   const allCompanyRes = useGetAllCompaniesQuery();
-  const [model, setModel] = useState<Model | null>(null);
   const [getAllCompanyModels, allCompanyModelRes] = useLazyGetAllModelsQuery();
   const dispatch = useDispatch();
+  const LaptopOrder = useSelector((state: RootState) => state.laptopOrder);
   const router = useRouter();
   const onSubmit = form.handleSubmit((data) => {
     dispatch(setSplit1({ ...data, year: Number(data.year), verified: true }));
     router.push("/order/laptop/config");
   });
+
+  useEffect(() => {
+    if (LaptopOrder.company !== "") {
+      form.setValue("company", LaptopOrder.company);
+    }
+    if (LaptopOrder.model !== "") {
+      form.setValue("model", LaptopOrder.model);
+    }
+    if (LaptopOrder.year) {
+      form.setValue("year", LaptopOrder.year.toString());
+    }
+    if (LaptopOrder.cid) {
+      getAllCompanyModels({ cid: LaptopOrder.cid });
+    }
+  }, []);
 
   return (
     <main className="flex items-center justify-center w-full">
@@ -145,6 +166,7 @@ function LaptopOrderPage() {
                                   );
 
                                   if (compnay) {
+                                    dispatch(setCompanyCid(company.docid));
                                     getAllCompanyModels({ cid: compnay.docid });
                                     form.reset();
                                     form.setValue("company", compnay.name);
@@ -220,7 +242,7 @@ function LaptopOrderPage() {
                                     value={model.name}
                                     key={model.docid}
                                     onSelect={(value: string) => {
-                                      setModel(model);
+                                      dispatch(setYears(model.years));
                                       form.setValue("model", value);
                                     }}
                                   >
@@ -267,7 +289,7 @@ function LaptopOrderPage() {
                           >
                             {field.value ? (
                               <>
-                                {model?.years.find(
+                                {LaptopOrder.years?.find(
                                   (year) => year.toString() === field.value
                                 )}
                               </>
@@ -287,7 +309,7 @@ function LaptopOrderPage() {
                               <CommandItem>Loading...</CommandItem>
                             ) : (
                               <>
-                                {model?.years.map((year) => (
+                                {LaptopOrder.years?.map((year) => (
                                   <CommandItem
                                     value={year.toString()}
                                     key={year}
@@ -319,7 +341,12 @@ function LaptopOrderPage() {
               />
               <div className="flex flex-col">
                 <Button className="w-full">Next</Button>
-                <Button variant={"link"}>{"Can't find your model"}</Button>
+                <Link href={"/order/laptop/new"}>
+                  {" "}
+                  <Button variant={"link"}>
+                    {"Can't find your laptop click here"}
+                  </Button>
+                </Link>
               </div>
             </form>
           </Form>
@@ -330,17 +357,3 @@ function LaptopOrderPage() {
 }
 
 export default LaptopOrderPage;
-{
-  /* <Select onValueChange={field.onChange} defaultValue={field.value}>
-  <SelectTrigger>
-    <SelectValue placeholder="Select a company" />
-  </SelectTrigger>
-  <SelectContent>
-    {companyNames.map((company) => (
-      <SelectItem key={company} value={company}>
-        {company}
-      </SelectItem>
-    ))}
-  </SelectContent>
-</Select>; */
-}

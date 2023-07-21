@@ -35,7 +35,7 @@ import {
   useCreateModelMutation,
   useGetAllCompaniesQuery,
   useGetAllModelsQuery,
-} from "@/lib/redux/rtkapi/adminApi";
+} from "@/lib/redux/rtkapi/gaimizApi";
 import { useToast } from "@/components/ui/use-toast";
 const formSchema = z.object({
   companyId: z.string(),

@@ -5,6 +5,7 @@ interface Split1Payload {
   model: string;
   year: number;
   verified: boolean;
+  newcompany?: boolean;
 }
 
 interface Split2Payload {
@@ -22,14 +23,28 @@ interface Split3Payload {
 
 const laptopOrderSlice = createSlice({
   name: "laptopOrder",
-  initialState: { orderType: "Laptop" } as Omit<LaptopOrder, "docid">,
+  initialState: { orderType: "Laptop" } as LaptopOrder & {
+    cid?: string | null;
+    years: number[] | null;
+    newcompany?: boolean;
+  },
   reducers: {
+    setOrderId: (state, action: PayloadAction<string>) => {
+      state.docid = action.payload;
+    },
+    setCompanyCid: (state, action: PayloadAction<string>) => {
+      state.cid = action.payload;
+    },
+    setYears: (state, action: PayloadAction<Array<number>>) => {
+      state.years = action.payload;
+    },
     setSplit1: (state, action: PayloadAction<Split1Payload>) => {
-      const { company, model, year, verified } = action.payload;
+      const { company, model, year, verified, newcompany } = action.payload;
       state.company = company;
       state.model = model;
       state.year = year;
       state.verified = verified;
+      state.newcompany = newcompany;
     },
     setSplit2: (state, action: PayloadAction<Split2Payload>) => {
       const { back, front, backDesign, frontDesign, withLogo } = action.payload;
@@ -47,6 +62,13 @@ const laptopOrderSlice = createSlice({
   },
 });
 
-export const { setSplit1, setSplit2, setSplit3 } = laptopOrderSlice.actions;
+export const {
+  setSplit1,
+  setSplit2,
+  setSplit3,
+  setCompanyCid,
+  setYears,
+  setOrderId,
+} = laptopOrderSlice.actions;
 
 export default laptopOrderSlice.reducer;

@@ -1,18 +1,18 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { profileApi } from "@/lib/redux/rtkapi/profileApi";
-import { adminApi } from "@/lib/redux/rtkapi/adminApi";
+import { gaimizApi } from "@/lib/redux/rtkapi/gaimizApi";
 import laptopOrderReducer from "@/lib/redux/slices/laptopOrderSlice";
 
 const store = configureStore({
   reducer: {
     laptopOrder: laptopOrderReducer,
     [profileApi.reducerPath]: profileApi.reducer,
-    [adminApi.reducerPath]: adminApi.reducer,
+    [gaimizApi.reducerPath]: gaimizApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
       .concat(profileApi.middleware)
-      .concat(adminApi.middleware),
+      .concat(gaimizApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

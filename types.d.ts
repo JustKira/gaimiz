@@ -36,7 +36,9 @@ type Profile = {
 };
 
 type LaptopOrder = {
-  readonly docid: string;
+  docid: string;
+  uid: string;
+  temp?: boolean;
   orderType: "Laptop";
   //split1
   company: string;
