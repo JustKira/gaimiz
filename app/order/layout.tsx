@@ -22,6 +22,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     return <GaimizLoading />;
   }
 
+  if (!user) {
+    router.push("/auth/signin");
+  }
+
   if (isError || data?.firstname) {
     if (data?.firstname) {
       router.push("/profile/create");

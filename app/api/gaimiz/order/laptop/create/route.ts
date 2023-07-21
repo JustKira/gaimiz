@@ -13,6 +13,7 @@ export async function GET(request: Request) {
   if (!uid) {
     return NextResponse.json({}, { status: 400 });
   }
+
   try {
     console.log("fetching");
     const { docs, empty } = await firestore

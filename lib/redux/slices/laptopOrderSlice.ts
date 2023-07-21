@@ -13,6 +13,8 @@ interface Split2Payload {
   front: boolean;
   backDesign?: string;
   frontDesign?: string;
+  backDesignDownUrl?: string | null;
+  frontDesignDownUrl?: string | null;
   withLogo: boolean;
 }
 
@@ -27,6 +29,8 @@ const laptopOrderSlice = createSlice({
     cid?: string | null;
     years: number[] | null;
     newcompany?: boolean;
+    backDesignDownUrl?: string | null;
+    frontDesignDownUrl?: string | null;
   },
   reducers: {
     setOrderId: (state, action: PayloadAction<string>) => {
@@ -47,11 +51,21 @@ const laptopOrderSlice = createSlice({
       state.newcompany = newcompany;
     },
     setSplit2: (state, action: PayloadAction<Split2Payload>) => {
-      const { back, front, backDesign, frontDesign, withLogo } = action.payload;
+      const {
+        back,
+        front,
+        backDesign,
+        frontDesign,
+        withLogo,
+        backDesignDownUrl,
+        frontDesignDownUrl,
+      } = action.payload;
       state.back = back;
       state.front = front;
       state.backDesign = backDesign;
       state.frontDesign = frontDesign;
+      state.backDesignDownUrl = backDesignDownUrl;
+      state.frontDesignDownUrl = frontDesignDownUrl;
       state.withLogo = withLogo;
     },
     setSplit3: (state, action: PayloadAction<Split3Payload>) => {

@@ -15,6 +15,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { GaimizLoading } from "@/components/ui/loading";
 import { useParams } from "next/navigation";
+import { Link } from "lucide-react";
 
 const LaptopOrderImageUpload = () => {
   const [frontFile, setFrontFile] = React.useState<File | null>(null);
@@ -108,6 +109,7 @@ const LaptopOrderImageUpload = () => {
               onChange={handleBackFileChange}
             />
           </div>
+
           <Button
             disabled={uploading}
             onClick={() => {

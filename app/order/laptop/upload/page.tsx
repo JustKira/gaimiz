@@ -12,13 +12,12 @@ import {
 import { setSplit3 } from "@/lib/redux/slices/laptopOrderSlice";
 import { RootState } from "@/lib/redux/store";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { readFileSync } from "fs";
-import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 import { BrowserView } from "react-device-detect";
 import QRCode from "react-qr-code";
 import { useDispatch, useSelector } from "react-redux";
 import { GaimizLoading } from "@/components/ui/loading";
+import Link from "next/link";
 
 const LaptopOrderImageUpload = () => {
   const [frontFile, setFrontFile] = React.useState<File | null>(null);
@@ -158,21 +157,28 @@ const LaptopOrderImageUpload = () => {
           ) : (
             <></>
           )}
-          <Button
-            disabled={uploading}
-            onClick={() => {
-              uploadImages();
-            }}
-          >
-            Confirm
-          </Button>
-          <Button
-            onClick={() => {
-              reload();
-            }}
-          >
-            Reload
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              disabled={uploading}
+              onClick={() => {
+                uploadImages();
+              }}
+            >
+              Confirm
+            </Button>
+            <Button
+              onClick={() => {
+                reload();
+              }}
+            >
+              Reload
+            </Button>
+            <Link href={"/order/laptop/confirm"}>
+              <Button type="button" className="w-full">
+                Next
+              </Button>
+            </Link>
+          </div>
         </CardContent>
       </Card>
     </main>

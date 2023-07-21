@@ -29,18 +29,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { setSplit2 } from "@/lib/redux/slices/laptopOrderSlice";
 import { useRouter } from "next/navigation";
 import { RootState } from "@/lib/redux/store";
-const formSchema = z.object({
-  back: z.boolean().refine((value) => value === true, {
-    message: "Back must be set to true",
-  }),
-  front: z.boolean().refine((value) => value === true, {
-    message: "Front must be set to true",
-  }),
-  backDesign: z.string(),
+const formSchema = z
+  .object({
+    back: z.boolean(),
+    front: z.boolean(),
+    backDesign: z.string(),
 
-  frontDesign: z.string(),
-  withLogo: z.boolean(),
-});
+    frontDesign: z.string(),
+    withLogo: z.boolean(),
+  })
+  .refine((data) => data.back || data.front, {
+    message: "Either 'back' or 'front' must be true",
+    path: ["back"],
+  });
 const LaptopConfigPage = () => {
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -62,7 +63,13 @@ const LaptopConfigPage = () => {
 
   const laptopOrder = useSelector((state: RootState) => state.laptopOrder);
   const onSubmit = form.handleSubmit((data) => {
-    dispatch(setSplit2(data));
+    dispatch(
+      setSplit2({
+        ...data,
+        backDesignDownUrl: backDUrl,
+        frontDesignDownUrl: frontDUrl,
+      })
+    );
     if (laptopOrder.verified) {
       router.push("/order/laptop/confirm");
     } else {
