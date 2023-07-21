@@ -282,7 +282,6 @@ function LaptopOrderPage() {
               <div className="flex flex-col">
                 <Button className="w-full">Next</Button>
                 <Link href={"/order/laptop"}>
-                  {" "}
                   <Button variant={"link"}>
                     {"Check if your laptop is inside list"}
                   </Button>

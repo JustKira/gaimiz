@@ -41,3 +41,27 @@ export async function GET(request: Request) {
     return NextResponse.json({}, { status: 400 });
   }
 }
+
+export async function PATCH(request: Request) {
+  await initializeAdmin();
+  const firestore = getFirestore();
+  const { searchParams } = new URL(request.url);
+  const did = searchParams.get("did") as string | null;
+  const body = (await request.json()) as any;
+  if (!did) {
+    return NextResponse.json({}, { status: 400 });
+  }
+  try {
+    console.log("fetching");
+    if (body) {
+      const {} = await firestore
+        .collection("laptopOrders")
+        .doc(did)
+        .update({ ...body });
+    }
+
+    return NextResponse.json({}, { status: 201 });
+  } catch {
+    return NextResponse.json({}, { status: 400 });
+  }
+}

@@ -63,8 +63,11 @@ const LaptopConfigPage = () => {
   const laptopOrder = useSelector((state: RootState) => state.laptopOrder);
   const onSubmit = form.handleSubmit((data) => {
     dispatch(setSplit2(data));
-
-    router.push("/order/laptop/confirm");
+    if (laptopOrder.verified) {
+      router.push("/order/laptop/confirm");
+    } else {
+      router.push("/order/laptop/upload");
+    }
   });
 
   React.useEffect(() => {

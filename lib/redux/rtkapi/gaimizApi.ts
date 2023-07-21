@@ -10,10 +10,19 @@ export const gaimizApi = createApi({
     getCurrentLaptopOrder: builder.query<{ data: LaptopOrder }, string>({
       query: (uid) => ({
         url: `order/laptop/create?uid=${uid}`,
-        method: "get",
+        method: "GET",
       }),
     }),
-
+    updateLaptopOrder: builder.mutation<
+      void,
+      { did: string; body: Partial<LaptopOrder> }
+    >({
+      query: ({ did, body }) => ({
+        url: `order/laptop/create?did=${did}`,
+        method: "PATCH",
+        body: { ...body },
+      }),
+    }),
     //SECTION - COMPANY
     // Create a company
     createCompany: builder.mutation<void, Omit<Company, "docid">>({
@@ -157,6 +166,7 @@ export const {
   useUpdateDesignMutation,
   useDeleteDesignMutation,
   useLazyGetCurrentLaptopOrderQuery,
+  useUpdateLaptopOrderMutation,
 } = gaimizApi;
 
 export default gaimizApi;
